@@ -1,0 +1,23 @@
+ShowFPS Changelog
+=================
+Elián Hanisch <lambdae2@gmail.com>
+v1.1, May 2016:
+
+This document lists important changes between versions.
+
+Version 1.1
+-----------
+
+* Updated for KSP 1.1
+
+Version 1.0
+-----------
+
+* change the default toggle key from F11 to F8.
+* make FPS counter dragable.
+* make the the enable/disable shortcut configurable.
+
+Version 0.2
+-----------
+
+* Initial release.
