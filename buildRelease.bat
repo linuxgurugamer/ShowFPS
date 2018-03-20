@@ -23,11 +23,11 @@ rem    but not always
 rem LICENSE is the license file
 rem README is the readme file
 
-set GAMEDIR=xxxxx
+set GAMEDIR=ShowFPS
 set GAMEDATA="GameData\"
 set VERSIONFILE=%GAMEDIR%.version
 set LICENSE=License.txt
-set README=ReadMe.md
+set README=README.md
 
 set RELEASEDIR=d:\Users\jbb\release
 set ZIP="c:\Program Files\7-zip\7z.exe"

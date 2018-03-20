@@ -8,7 +8,7 @@ rem VERSIONFILE is the name of the version file, usually the same as GAMEDATA,
 rem    but not always
 
 set H=R:\KSP_1.4.1_dev
-set GAMEDIR=xxxxx
+set GAMEDIR=ShowFPS
 set GAMEDATA="GameData\"
 set VERSIONFILE=%GAMEDIR%.version
 
