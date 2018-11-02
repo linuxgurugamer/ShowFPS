@@ -22,6 +22,7 @@ using System;
 using System.IO;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ShowFPS
 {
@@ -29,14 +30,14 @@ namespace ShowFPS
     public class ShowFPS : MonoBehaviour
     {
         static FPSCounter instance;
-        GUIText guiText;
+        Text guiText;
 
         void Awake ()
         {
             if (instance == null) {
                 Settings.LoadConfig ();
                 instance = gameObject.AddComponent<FPSCounter> ();
-                guiText = gameObject.GetComponent<GUIText> ();
+                guiText = gameObject.GetComponent<Text> ();
                 guiText.transform.position = new Vector3 (Settings.position_x, Settings.position_y, 0f);
                 DontDestroyOnLoad (gameObject);
             }
@@ -52,7 +53,7 @@ namespace ShowFPS
 
     /* Code adapted from the example in http://wiki.unity3d.com/index.php?title=FramesPerSecond 
      * written by Annop "Nargus" Prapasapong. */
-    [RequireComponent(typeof(GUIText))]
+    [RequireComponent(typeof(Text))]
     public class FPSCounter : MonoBehaviour
     {
         new bool enabled = false;
@@ -71,12 +72,12 @@ namespace ShowFPS
         float offset_x;
         float offset_y;
 
-        GUIText guiText;
+        Text guiText;
      
         void Awake ()
         {
             StartCoroutine (FPS ());
-            guiText = gameObject.GetComponent<GUIText> ();
+            guiText = gameObject.GetComponent<Text> ();
             guiText.enabled = false;
         }
 
@@ -100,15 +101,17 @@ namespace ShowFPS
             benchStartTime = Time.realtimeSinceStartup;
             benchStartFrames = Time.frameCount;
         }
+        float x, y;
 
         void Update ()
         {
             if (drag) {
-                var x = Input.mousePosition.x / Screen.width;
-                var y = Input.mousePosition.y / Screen.height;
+                 x = Input.mousePosition.x / Screen.width;
+                 y = Input.mousePosition.y / Screen.height;
                 guiText.transform.position = new Vector3 (x + offset_x, y + offset_y, 0f);
             }
             if (PluginKeys.PLUGIN_TOGGLE.GetKeyDown()) {
+                Debug.Log("ShowFPS, PLUGIN_TOGGLE");
                 if (Input.GetKey(KeyCode.LeftControl) 
                         || Input.GetKey(KeyCode.RightControl)) {
                     if (!enabled) {
@@ -121,13 +124,55 @@ namespace ShowFPS
                 } else {
                     enabled = !enabled;
                     guiText.enabled = enabled;
+
+                    guiText.useGUILayout = false;
                     if (!enabled) {
                         benchmark = false;
                     }
                 }
             }
         }
-     
+        void DrawOutline(Rect r, string t, int strength, GUIStyle style, Color outColor, Color inColor)
+        {
+            Color backup = style.normal.textColor;
+            style.normal.textColor = outColor;
+            for (int i = -strength; i <= strength; i++)
+            {
+                GUI.Label(new Rect(r.x - strength, r.y + i, r.width, r.height), t, style);
+                GUI.Label(new Rect(r.x + strength, r.y + i, r.width, r.height), t, style);
+            }
+            for (int i = -strength + 1; i <= strength - 1; i++)
+            {
+                GUI.Label(new Rect(r.x + i, r.y - strength, r.width, r.height), t, style);
+                GUI.Label(new Rect(r.x + i, r.y + strength, r.width, r.height), t, style);
+            }
+            style.normal.textColor = inColor;
+            GUI.Label(r, t, style);
+            style.normal.textColor = backup;
+        }
+        [Persistent]
+        int timeSize = 10;
+        private Rect fpsPos = new Rect(0,0,10,10);
+        GUIStyle timeLabelStyle = null;
+        public void OnGUI()
+        {
+            if (enabled)
+            {
+                if (timeLabelStyle == null)
+                {
+                    timeLabelStyle = new GUIStyle(GUI.skin.label);
+                    //gametimeX = Mathf.Clamp(gametimeX, 0, Screen.width);
+                    //gametimeY = Mathf.Clamp(gametimeY, 0, Screen.height);
+                    timeLabelStyle.fontSize = timeSize;
+                }
+                Vector2 size = timeLabelStyle.CalcSize(new GUIContent(curFPS.ToString()));
+                fpsPos.Set(x * Screen.width + offset_x, y * Screen.height + offset_y, 200f, size.y);
+                DrawOutline(fpsPos, curFPS.ToString(), 1, timeLabelStyle, Color.black, Color.white);
+                Debug.Log("ShowFPS.OnGUI, curFPS: " + curFPS + ", fpsPos: " + fpsPos + ",  size.y: " + size.y);
+            }
+
+        }
+
         IEnumerator FPS ()
         {
             for (;;) {
