@@ -1,4 +1,19 @@
-ShowFPS Changelog
+Changelog
+
+0.2.1
+	Added InstallChecker
+	Updated AssemblyVersion
+	Updated for KSP 1.8
+
+0.2.0.2
+	Version bump for 1.5 rebuild
+
+0.2.0.1
+	Updated version file
+
+0.2.0
+	Initial adoption
+
 =================
 Elián Hanisch <lambdae2@gmail.com>
 v1.1, May 2016:
