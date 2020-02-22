@@ -111,7 +111,9 @@ namespace ShowFPS
                 guiText.transform.position = new Vector3 (x + offset_x, y + offset_y, 0f);
             }
             if (PluginKeys.PLUGIN_TOGGLE.GetKeyDown()) {
+#if DEBUG
                 Debug.Log("ShowFPS, PLUGIN_TOGGLE");
+#endif
                 if (Input.GetKey(KeyCode.LeftControl) 
                         || Input.GetKey(KeyCode.RightControl)) {
                     if (!enabled) {
@@ -168,7 +170,9 @@ namespace ShowFPS
                 Vector2 size = timeLabelStyle.CalcSize(new GUIContent(curFPS.ToString()));
                 fpsPos.Set(x * Screen.width + offset_x, y * Screen.height + offset_y, 200f, size.y);
                 DrawOutline(fpsPos, curFPS.ToString(), 1, timeLabelStyle, Color.black, Color.white);
+#if DEBUG
                 Debug.Log("ShowFPS.OnGUI, curFPS: " + curFPS + ", fpsPos: " + fpsPos + ",  size.y: " + size.y);
+#endif
             }
 
         }
