@@ -1,5 +1,8 @@
 Changelog
 
+0.2.2.1
+	Added placeholder in PluginData
+
 0.2.2
 	Fixed dragging of numbers to anywhere
 	Added font size to config file
