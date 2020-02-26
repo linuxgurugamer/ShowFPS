@@ -14,13 +14,17 @@ namespace ShowFPS
         public static float position_x;
         public static float position_y;
 
+        public static int fontSize = 10;
         public static void LoadConfig()
         {
             configAbsolutePath = Path.Combine(KSPUtil.ApplicationRootPath, configPath);
-            settings = ConfigNode.Load(configAbsolutePath) ?? new ConfigNode();
+            //Debug.Log("ShowFPS, configAbsolutePath: " + configAbsolutePath);
 
-            position_x = GetValue("position_x", 0.05f);
-            position_y = GetValue("position_y", 0.25f);
+            settings = ConfigNode.Load(configAbsolutePath) ?? new ConfigNode();
+            // These values are based on screen size
+            position_x = GetValue("position_x", 0.93f);
+            position_y = GetValue("position_y", 0.93f);
+            fontSize = GetValue("fontSize", 10);
 
             PluginKeys.Setup();
         }
@@ -30,6 +34,9 @@ namespace ShowFPS
             SetValue("position_x", position_x);
             SetValue("position_y", position_y);
             SetValue("plugin_key", PluginKeys.PLUGIN_TOGGLE.primary.ToString());
+            SetValue("fontSize", fontSize);
+
+            configAbsolutePath = Path.Combine(KSPUtil.ApplicationRootPath, configPath);
 
             settings.Save(configAbsolutePath);
         }
@@ -68,18 +75,4 @@ namespace ShowFPS
         }
     }
 
-    public static class PluginKeys
-    {
-        public static KeyBinding PLUGIN_TOGGLE = new KeyBinding(KeyCode.F8);
-
-        public static void Setup()
-        {
-            PLUGIN_TOGGLE = new KeyBinding(Parse(Settings.GetValue("plugin_key", PLUGIN_TOGGLE.primary.ToString())));
-        }
-
-        public static KeyCode Parse(string value)
-        {
-            return (KeyCode)Enum.Parse(typeof(KeyCode), value);
-        }
-    }
 }

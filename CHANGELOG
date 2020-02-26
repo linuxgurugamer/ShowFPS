@@ -1,5 +1,9 @@
 Changelog
 
+0.2.2
+	Fixed dragging of numbers to anywhere
+	Added font size to config file
+
 0.2.1.1
 	Disabled log spam when not compiled in debug mode
 

@@ -32,21 +32,24 @@ namespace ShowFPS
         static FPSCounter instance;
         Text guiText;
 
-        void Awake ()
+        void Awake()
         {
-            if (instance == null) {
-                Settings.LoadConfig ();
-                instance = gameObject.AddComponent<FPSCounter> ();
-                guiText = gameObject.GetComponent<Text> ();
-                guiText.transform.position = new Vector3 (Settings.position_x, Settings.position_y, 0f);
-                DontDestroyOnLoad (gameObject);
+            if (instance == null)
+            {
+                Settings.LoadConfig();
+                instance = gameObject.AddComponent<FPSCounter>();
+                guiText = gameObject.GetComponent<Text>();
+                //Debug.Log("Settings.position_x: " + Settings.position_x + ", Settings.position_y: " + Settings.position_y);
+                guiText.transform.position = new Vector3(Settings.position_x, Settings.position_y, 0f);
+                DontDestroyOnLoad(gameObject);
             }
         }
 
-        void OnDestroy ()
+        void OnDestroy()
         {
-            if (instance != null) {
-                Settings.SaveConfig ();
+            if (instance != null)
+            {
+                Settings.SaveConfig();
             }
         }
     }
@@ -73,29 +76,30 @@ namespace ShowFPS
         float offset_y;
 
         Text guiText;
-     
-        void Awake ()
+
+        void Awake()
         {
-            StartCoroutine (FPS ());
-            guiText = gameObject.GetComponent<Text> ();
+            StartCoroutine(FPS());
+            guiText = gameObject.GetComponent<Text>();
             guiText.enabled = false;
         }
 
-        void OnMouseDown ()
+        void OnMouseDown()
         {
             drag = true;
             offset_x = guiText.transform.position.x - Input.mousePosition.x / Screen.width;
-            offset_y = guiText.transform.position.y - Input.mousePosition.y / Screen.height;
+            offset_y = guiText.transform.position.y - (Screen.height - Input.mousePosition.y) / Screen.height;
         }
 
-        void OnMouseUp ()
+        void OnMouseUp()
         {
             drag = false;
-            Settings.position_x = guiText.transform.position.x;
-            Settings.position_y = guiText.transform.position.y;
+
+            Settings.position_x =  Input.mousePosition.x / Screen.width;
+            Settings.position_y = (Screen.height - Input.mousePosition.y) / Screen.height;
         }
 
-        void resetBenchmark ()
+        void resetBenchmark()
         {
             minFPS = curFPS;
             benchStartTime = Time.realtimeSinceStartup;
@@ -103,41 +107,74 @@ namespace ShowFPS
         }
         float x, y;
 
-        void Update ()
+        void Update()
         {
-            if (drag) {
-                 x = Input.mousePosition.x / Screen.width;
-                 y = Input.mousePosition.y / Screen.height;
-                guiText.transform.position = new Vector3 (x + offset_x, y + offset_y, 0f);
+            if (drag)
+            {
+                x = Input.mousePosition.x / Screen.width;
+                y = (Screen.height - Input.mousePosition.y) / Screen.height;
+                //Debug.Log("ShowFPS.update, mouse x, y: " + x + ", " + y);
+                guiText.transform.position = new Vector3(x + offset_x, y + offset_y, 0f);
             }
-            if (PluginKeys.PLUGIN_TOGGLE.GetKeyDown()) {
+            else
+            {
+                x = Settings.position_x;
+                y = Settings.position_y;
+            }
+            if (PluginKeys.PLUGIN_TOGGLE.GetKeyDown())
+            {
 #if DEBUG
                 Debug.Log("ShowFPS, PLUGIN_TOGGLE");
 #endif
-                if (Input.GetKey(KeyCode.LeftControl) 
-                        || Input.GetKey(KeyCode.RightControl)) {
-                    if (!enabled) {
+                if (Input.GetKey(KeyCode.LeftControl)
+                        || Input.GetKey(KeyCode.RightControl))
+                {
+                    if (!enabled)
+                    {
                         return;
                     }
                     benchmark = !benchmark;
-                    if (benchmark) {
-                        resetBenchmark ();
+                    if (benchmark)
+                    {
+                        resetBenchmark();
                     }
-                } else {
+                }
+                else
+                {
                     enabled = !enabled;
                     guiText.enabled = enabled;
 
                     guiText.useGUILayout = false;
-                    if (!enabled) {
+                    if (!enabled)
+                    {
                         benchmark = false;
                     }
                 }
+            }
+            if (enabled)
+            {
+                if (drag || fpsPos.Contains(new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y)))
+                {
+                    bool b = Input.GetMouseButton(0);
+                    
+                    if (!drag && b)
+                    {
+                        OnMouseDown();
+                    }
+                    else
+                        if (drag && !b)
+                        OnMouseUp();
+                    drag = b;
+                    
+                }
+                else drag = false;
             }
         }
         void DrawOutline(Rect r, string t, int strength, GUIStyle style, Color outColor, Color inColor)
         {
             Color backup = style.normal.textColor;
             style.normal.textColor = outColor;
+
             for (int i = -strength; i <= strength; i++)
             {
                 GUI.Label(new Rect(r.x - strength, r.y + i, r.width, r.height), t, style);
@@ -152,9 +189,15 @@ namespace ShowFPS
             GUI.Label(r, t, style);
             style.normal.textColor = backup;
         }
-        [Persistent]
-        int timeSize = 10;
-        private Rect fpsPos = new Rect(0,0,10,10);
+
+        private const int LEFT = 10;
+        private const int TOP = 20;
+        private const int WIDTH = 50;
+        private const int HEIGHT = 10;
+
+        //[Persistent]
+        //int timeSize = 14;
+        private Rect fpsPos = new Rect(LEFT, TOP, WIDTH, HEIGHT);
         GUIStyle timeLabelStyle = null;
         public void OnGUI()
         {
@@ -165,40 +208,49 @@ namespace ShowFPS
                     timeLabelStyle = new GUIStyle(GUI.skin.label);
                     //gametimeX = Mathf.Clamp(gametimeX, 0, Screen.width);
                     //gametimeY = Mathf.Clamp(gametimeY, 0, Screen.height);
-                    timeLabelStyle.fontSize = timeSize;
+                    timeLabelStyle.fontSize = Settings.fontSize; // timeSize;
                 }
-                Vector2 size = timeLabelStyle.CalcSize(new GUIContent(curFPS.ToString()));
+                Vector2 size = timeLabelStyle.CalcSize(new GUIContent(curFPS.ToString("F2")));
+                //Debug.Log("ShowFPS, x, y: " + x+", " + y + ", Screen.Width, Screen.height: "+ Screen.width + ", " + Screen.height + ",  offset_x, offset_y: " + offset_x + ", " + offset_y );
+
                 fpsPos.Set(x * Screen.width + offset_x, y * Screen.height + offset_y, 200f, size.y);
-                DrawOutline(fpsPos, curFPS.ToString(), 1, timeLabelStyle, Color.black, Color.white);
+      
+                DrawOutline(fpsPos, curFPS.ToString("F2"), 1, timeLabelStyle, Color.black, Color.white);
 #if DEBUG
-                Debug.Log("ShowFPS.OnGUI, curFPS: " + curFPS + ", fpsPos: " + fpsPos + ",  size.y: " + size.y);
+                //Debug.Log("ShowFPS.OnGUI, curFPS: " + curFPS + ", fpsPos: " + fpsPos + ",  size.y: " + size.y);
 #endif
             }
 
         }
 
-        IEnumerator FPS ()
+        IEnumerator FPS()
         {
-            for (;;) {
-                if (!enabled) {
-                    yield return new WaitForSeconds (frequency);
+            for (; ; )
+            {
+                if (!enabled)
+                {
+                    yield return new WaitForSeconds(frequency);
                 }
 
                 // Capture frame-per-second
                 int lastFrameCount = Time.frameCount;
                 float lastTime = Time.realtimeSinceStartup;
-                yield return new WaitForSeconds (frequency);
+                yield return new WaitForSeconds(frequency);
                 float timeSpan = Time.realtimeSinceStartup - lastTime;
                 int frameCount = Time.frameCount - lastFrameCount;
-     
+
                 // Display it
                 curFPS = frameCount / timeSpan;
-                if (!benchmark) {
+                if (!benchmark)
+                {
                     guiText.text = String.Format("{0:F1} fps", curFPS);
-                } else {
+                }
+                else
+                {
                     benchTime = Time.realtimeSinceStartup - benchStartTime;
                     benchFrames = Time.frameCount - benchStartFrames;
-                    if (curFPS < minFPS) {
+                    if (curFPS < minFPS)
+                    {
                         minFPS = curFPS;
                     }
                     guiText.text = String.Format(
@@ -211,79 +263,19 @@ namespace ShowFPS
         }
     }
 
-    public static class Settings
+
+    public static class PluginKeys
     {
-        const string configPath = "GameData/ShowFPS/settings.cfg";
-        static string configAbsolutePath;
-        static ConfigNode settings;
+        public static KeyBinding PLUGIN_TOGGLE = new KeyBinding(KeyCode.F8);
 
-        public static float position_x;
-        public static float position_y;
-
-        public static void LoadConfig ()
+        public static void Setup()
         {
-            configAbsolutePath = Path.Combine (KSPUtil.ApplicationRootPath, configPath);
-            settings = ConfigNode.Load (configAbsolutePath) ?? new ConfigNode ();
-
-            position_x = GetValue ("position_x", 0.93f);
-            position_y = GetValue ("position_y", 0.93f);
-
-            PluginKeys.Setup ();
+            PLUGIN_TOGGLE = new KeyBinding(Parse(Settings.GetValue("plugin_key", PLUGIN_TOGGLE.primary.ToString())));
         }
 
-        public static void SaveConfig ()
+        public static KeyCode Parse(string value)
         {
-            SetValue ("position_x", position_x);
-            SetValue ("position_y", position_y);
-            SetValue ("plugin_key", PluginKeys.PLUGIN_TOGGLE.primary.ToString());
-
-            settings.Save (configAbsolutePath);
-        }
-
-        public static void SetValue (string key, object value)
-        {
-            if (settings.HasValue(key)) {
-                settings.RemoveValue(key);
-            }
-            settings.AddValue(key, value);
-        }
-
-        public static int GetValue (string key, int defaultValue)
-        {
-            int value;
-            return int.TryParse (settings.GetValue (key), out value) ? value : defaultValue;
-        }
-
-        public static bool GetValue (string key, bool defaultValue)
-        {
-            bool value;
-            return bool.TryParse (settings.GetValue (key), out value) ? value : defaultValue;
-        }
-
-        public static float GetValue (string key, float defaultValue)
-        {
-            float value;
-            return float.TryParse (settings.GetValue (key), out value) ? value : defaultValue;
-        }
-
-        public static string GetValue (string key, string defaultValue)
-        {
-            string value = settings.GetValue(key);
-            return String.IsNullOrEmpty (value) ? defaultValue : value;
-        }
-    }
-
-    public static class PluginKeys 
-    {
-        public static KeyBinding PLUGIN_TOGGLE = new KeyBinding (KeyCode.F8);
-
-        public static void Setup ()
-        {
-            PLUGIN_TOGGLE = new KeyBinding(Parse(Settings.GetValue ("plugin_key", PLUGIN_TOGGLE.primary.ToString())));
-        }
-
-        public static KeyCode Parse(string value) {
-            return (KeyCode)Enum.Parse (typeof(KeyCode), value);
+            return (KeyCode)Enum.Parse(typeof(KeyCode), value);
         }
     }
 }
