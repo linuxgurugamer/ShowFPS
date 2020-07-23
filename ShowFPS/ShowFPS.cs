@@ -215,7 +215,10 @@ namespace ShowFPS
 
                 fpsPos.Set(x * Screen.width + offset_x, y * Screen.height + offset_y, 200f, size.y);
       
-                DrawOutline(fpsPos, curFPS.ToString("F2"), 1, timeLabelStyle, Color.black, Color.white);
+                if (curFPS > 60)
+                    DrawOutline(fpsPos, Math.Round(curFPS).ToString("F0"), 1, timeLabelStyle, Color.black, Color.white);
+                else
+                    DrawOutline(fpsPos, Math.Round(curFPS,2).ToString("F2"), 1, timeLabelStyle, Color.black, Color.white);
 #if DEBUG
                 //Debug.Log("ShowFPS.OnGUI, curFPS: " + curFPS + ", fpsPos: " + fpsPos + ",  size.y: " + size.y);
 #endif

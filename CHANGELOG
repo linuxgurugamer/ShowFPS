@@ -1,5 +1,9 @@
 Changelog
 
+0.2.3
+	FPS > 60 now get rounded to nearest integer
+	FPS<= 60 get rounded to nearest 2 decimal places
+
 0.2.2.1
 	Added placeholder in PluginData
 
