@@ -26,17 +26,24 @@ using UnityEngine.UI;
 
 namespace ShowFPS
 {
-    [KSPAddon(KSPAddon.Startup.MainMenu, true)]
+    [KSPAddon(KSPAddon.Startup.EveryScene, true)]
     public class ShowFPS : MonoBehaviour
     {
+        static FPSCounter instance;
+
         void Awake()
         {
-            DontDestroyOnLoad(gameObject);
+            if (instance == null)
+            {
+                Settings.LoadConfig();
+                instance = gameObject.AddComponent<FPSCounter>();
+                DontDestroyOnLoad(gameObject);
+            }
         }
 
         void OnDestroy()
         {
-            //if (instance != null)
+            if (instance != null)
             {
                 Settings.SaveConfig();
             }
@@ -84,7 +91,7 @@ namespace ShowFPS
         {
             drag = false;
 
-            Settings.position_x = Input.mousePosition.x / Screen.width;
+            Settings.position_x =  Input.mousePosition.x / Screen.width;
             Settings.position_y = (Screen.height - Input.mousePosition.y) / Screen.height;
         }
 
@@ -102,6 +109,7 @@ namespace ShowFPS
             {
                 x = Input.mousePosition.x / Screen.width;
                 y = (Screen.height - Input.mousePosition.y) / Screen.height;
+                //Debug.Log("ShowFPS.update, mouse x, y: " + x + ", " + y);
                 guiText.transform.position = new Vector3(x + offset_x, y + offset_y, 0f);
             }
             else
@@ -141,7 +149,7 @@ namespace ShowFPS
                 if (drag || fpsPos.Contains(new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y)))
                 {
                     bool b = Input.GetMouseButton(0);
-
+                    
                     if (!drag && b)
                     {
                         OnMouseDown();
@@ -150,12 +158,12 @@ namespace ShowFPS
                         if (drag && !b)
                         OnMouseUp();
                     drag = b;
-
+                    
                 }
                 else drag = false;
             }
         }
-        void DrawOutline(int offset, Rect r, string t, GUIStyle style, Color outColor, Color inColor)
+        void DrawOutline(int offset, Rect r, string t, int strength, GUIStyle style, Color outColor, Color inColor)
         {
             Color backup = style.normal.textColor;
             style.normal.textColor = outColor;
@@ -163,7 +171,6 @@ namespace ShowFPS
             float yOffset = (r.height) * offset;
 
             style.normal.textColor = inColor;
-            //GUI.Label(r, t, style);
             GUI.Label(new Rect(r.x, r.y + yOffset, r.width, r.height), t, style);
             style.normal.textColor = backup;
         }
@@ -173,8 +180,6 @@ namespace ShowFPS
         private const int WIDTH = 50;
         private const int HEIGHT = 10;
 
-        //[Persistent]
-        //int timeSize = 14;
         private Rect fpsPos = new Rect(LEFT, TOP, WIDTH, HEIGHT);
         GUIStyle timeLabelStyle = null;
         public void OnGUI()
@@ -184,9 +189,6 @@ namespace ShowFPS
                 if (timeLabelStyle == null)
                 {
                     timeLabelStyle = new GUIStyle(GUI.skin.label);
-                    //gametimeX = Mathf.Clamp(gametimeX, 0, Screen.width);
-                    //gametimeY = Mathf.Clamp(gametimeY, 0, Screen.height);
-                    timeLabelStyle.fontSize = Settings.fontSize; // timeSize;
                 }
                 Vector2 size = timeLabelStyle.CalcSize(new GUIContent(curFPS.ToString("F2")));
 
@@ -195,14 +197,13 @@ namespace ShowFPS
                 if (!benchmark)
                 {
                     if (curFPS > 60)
-                        DrawOutline(0, fpsPos, Math.Round(curFPS).ToString("F0") + " fps", timeLabelStyle, Color.black, Color.white);
+                        DrawOutline(0, fpsPos, Math.Round(curFPS).ToString("F0") + " fps", 1, timeLabelStyle, Color.black, Color.white);
                     else
-                        DrawOutline(0, fpsPos, Math.Round(curFPS, 2).ToString("F2") + " fps", timeLabelStyle, Color.black, Color.white);
-                }
-                else
+                        DrawOutline(0, fpsPos, Math.Round(curFPS, 2).ToString("F2") + " fps", 1, timeLabelStyle, Color.black, Color.white);
+                } else
                 {
-                    DrawOutline(0, fpsPos, "FPS: " + Math.Round(curFPS, 2).ToString("F2"), timeLabelStyle, Color.black, Color.white); DrawOutline(1, fpsPos, "Avg: " + (benchFrames / benchTime).ToString("F1"), timeLabelStyle, Color.black, Color.white);
-                    DrawOutline(2, fpsPos, "Min: " + minFPS.ToString("F1"), timeLabelStyle, Color.black, Color.white);
+                    DrawOutline(0, fpsPos, "FPS: " + Math.Round(curFPS, 2).ToString("F2"), 1, timeLabelStyle, Color.black, Color.white); DrawOutline(1, fpsPos, "Avg: " + (benchFrames / benchTime).ToString("F1"), 1, timeLabelStyle, Color.black, Color.white);
+                    DrawOutline(2, fpsPos, "Min: " + minFPS.ToString("F1"), 1, timeLabelStyle, Color.black, Color.white);
                 }
             }
 
@@ -212,9 +213,9 @@ namespace ShowFPS
         {
             for (; ; )
             {
-                if (!enabled)
+                if (!enabled) // double the wait if not enabled
                 {
-                    yield return new WaitForSeconds(frequency * 5);
+                    yield return new WaitForSeconds(frequency);
                 }
 
                 // Capture frame-per-second
