@@ -29,11 +29,12 @@ namespace ShowFPS
     [KSPAddon(KSPAddon.Startup.EveryScene, true)]
     public class ShowFPS : MonoBehaviour
     {
-        static FPSCounter instance;
-        Text guiText;
+        //static FPSCounter instance;
+        //Text guiText;
 
         void Awake()
         {
+#if false
             if (instance == null)
             {
                 Settings.LoadConfig();
@@ -41,13 +42,14 @@ namespace ShowFPS
                 guiText = gameObject.GetComponent<Text>();
                 //Debug.Log("Settings.position_x: " + Settings.position_x + ", Settings.position_y: " + Settings.position_y);
                 guiText.transform.position = new Vector3(Settings.position_x, Settings.position_y, 0f);
-                DontDestroyOnLoad(gameObject);
             }
+#endif
+                DontDestroyOnLoad(gameObject);
         }
 
         void OnDestroy()
         {
-            if (instance != null)
+            //if (instance != null)
             {
                 Settings.SaveConfig();
             }
@@ -170,23 +172,28 @@ namespace ShowFPS
                 else drag = false;
             }
         }
-        void DrawOutline(Rect r, string t, int strength, GUIStyle style, Color outColor, Color inColor)
+        void DrawOutline(int offset, Rect r, string t, int strength, GUIStyle style, Color outColor, Color inColor)
         {
             Color backup = style.normal.textColor;
             style.normal.textColor = outColor;
 
+            float yOffset = (r.height) * offset;
+
+#if false
             for (int i = -strength; i <= strength; i++)
             {
-                GUI.Label(new Rect(r.x - strength, r.y + i, r.width, r.height), t, style);
-                GUI.Label(new Rect(r.x + strength, r.y + i, r.width, r.height), t, style);
+                GUI.Label(new Rect(r.x - strength, yOffset + r.y + i, r.width, r.height), t, style);
+                GUI.Label(new Rect(r.x + strength, yOffset + r.y + i, r.width, r.height), t, style);
             }
             for (int i = -strength + 1; i <= strength - 1; i++)
             {
-                GUI.Label(new Rect(r.x + i, r.y - strength, r.width, r.height), t, style);
-                GUI.Label(new Rect(r.x + i, r.y + strength, r.width, r.height), t, style);
+                GUI.Label(new Rect(r.x + i, yOffset + r.y - strength, r.width, r.height), t, style);
+                GUI.Label(new Rect(r.x + i, yOffset + r.y + strength, r.width, r.height), t, style);
             }
+#endif
             style.normal.textColor = inColor;
-            GUI.Label(r, t, style);
+            //GUI.Label(r, t, style);
+            GUI.Label(new Rect(r.x, r.y + yOffset, r.width, r.height), t, style);
             style.normal.textColor = backup;
         }
 
@@ -214,11 +221,18 @@ namespace ShowFPS
                 //Debug.Log("ShowFPS, x, y: " + x+", " + y + ", Screen.Width, Screen.height: "+ Screen.width + ", " + Screen.height + ",  offset_x, offset_y: " + offset_x + ", " + offset_y );
 
                 fpsPos.Set(x * Screen.width + offset_x, y * Screen.height + offset_y, 200f, size.y);
-      
-                if (curFPS > 60)
-                    DrawOutline(fpsPos, Math.Round(curFPS).ToString("F0"), 1, timeLabelStyle, Color.black, Color.white);
-                else
-                    DrawOutline(fpsPos, Math.Round(curFPS,2).ToString("F2"), 1, timeLabelStyle, Color.black, Color.white);
+
+                if (!benchmark)
+                {
+                    if (curFPS > 60)
+                        DrawOutline(0, fpsPos, Math.Round(curFPS).ToString("F0") + " fps", 1, timeLabelStyle, Color.black, Color.white);
+                    else
+                        DrawOutline(0, fpsPos, Math.Round(curFPS, 2).ToString("F2") + " fps", 1, timeLabelStyle, Color.black, Color.white);
+                } else
+                {
+                    DrawOutline(0, fpsPos, "FPS: " + Math.Round(curFPS, 2).ToString("F2"), 1, timeLabelStyle, Color.black, Color.white); DrawOutline(1, fpsPos, "Avg: " + (benchFrames / benchTime).ToString("F1"), 1, timeLabelStyle, Color.black, Color.white);
+                    DrawOutline(2, fpsPos, "Min: " + minFPS.ToString("F1"), 1, timeLabelStyle, Color.black, Color.white);
+                }
 #if DEBUG
                 //Debug.Log("ShowFPS.OnGUI, curFPS: " + curFPS + ", fpsPos: " + fpsPos + ",  size.y: " + size.y);
 #endif
@@ -246,7 +260,7 @@ namespace ShowFPS
                 curFPS = frameCount / timeSpan;
                 if (!benchmark)
                 {
-                    guiText.text = String.Format("{0:F1} fps", curFPS);
+                    //guiText.text = String.Format("{0:F1} fps", curFPS);
                 }
                 else
                 {
@@ -256,11 +270,11 @@ namespace ShowFPS
                     {
                         minFPS = curFPS;
                     }
-                    guiText.text = String.Format(
-                        "{0:F1} fps\nbenchmark\navg: {1:F1}\nmin: {2:F1}",
-                        curFPS,
-                        benchFrames / benchTime,
-                        minFPS);
+                    //guiText.text = String.Format(
+                    //    "{0:F1} fps\nbenchmark\navg: {1:F1}\nmin: {2:F1}",
+                    //    curFPS,
+                    //    benchFrames / benchTime,
+                    //    minFPS);
                 }
             }
         }
