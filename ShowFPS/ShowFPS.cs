@@ -26,7 +26,7 @@ using UnityEngine.UI;
 
 namespace ShowFPS
 {
-    [KSPAddon(KSPAddon.Startup.EveryScene, true)]
+    [KSPAddon(KSPAddon.Startup.MainMenu, true)]
     public class ShowFPS : MonoBehaviour
     {
         static FPSCounter instance;
@@ -56,16 +56,10 @@ namespace ShowFPS
     public class FPSCounter : MonoBehaviour
     {
         new bool enabled = false;
-        float frequency = 0.5f;
+        internal static float frequency = 0.5f;
 
         float curFPS;
-        float minFPS;
 
-        bool benchmark = false;
-        float benchStartTime;
-        float benchTime;
-        float benchFrames;
-        float benchStartFrames;
 
         bool drag;
         float offset_x;
@@ -91,16 +85,10 @@ namespace ShowFPS
         {
             drag = false;
 
-            Settings.position_x =  Input.mousePosition.x / Screen.width;
+            Settings.position_x = Input.mousePosition.x / Screen.width;
             Settings.position_y = (Screen.height - Input.mousePosition.y) / Screen.height;
         }
 
-        void resetBenchmark()
-        {
-            minFPS = curFPS;
-            benchStartTime = Time.realtimeSinceStartup;
-            benchStartFrames = Time.frameCount;
-        }
         float x, y;
 
         void Update()
@@ -119,6 +107,7 @@ namespace ShowFPS
             }
             if (PluginKeys.PLUGIN_TOGGLE.GetKeyDown())
             {
+#if false
                 if (Input.GetKey(KeyCode.LeftControl)
                         || Input.GetKey(KeyCode.RightControl))
                 {
@@ -143,13 +132,14 @@ namespace ShowFPS
                         benchmark = false;
                     }
                 }
+#endif
             }
             if (enabled)
             {
                 if (drag || fpsPos.Contains(new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y)))
                 {
                     bool b = Input.GetMouseButton(0);
-                    
+
                     if (!drag && b)
                     {
                         OnMouseDown();
@@ -158,7 +148,7 @@ namespace ShowFPS
                         if (drag && !b)
                         OnMouseUp();
                     drag = b;
-                    
+
                 }
                 else drag = false;
             }
@@ -194,17 +184,10 @@ namespace ShowFPS
 
                 fpsPos.Set(x * Screen.width + offset_x, y * Screen.height + offset_y, 200f, size.y);
 
-                if (!benchmark)
-                {
-                    if (curFPS > 60)
-                        DrawOutline(0, fpsPos, Math.Round(curFPS).ToString("F0") + " fps", 1, timeLabelStyle, Color.black, Color.white);
-                    else
-                        DrawOutline(0, fpsPos, Math.Round(curFPS, 2).ToString("F2") + " fps", 1, timeLabelStyle, Color.black, Color.white);
-                } else
-                {
-                    DrawOutline(0, fpsPos, "FPS: " + Math.Round(curFPS, 2).ToString("F2"), 1, timeLabelStyle, Color.black, Color.white); DrawOutline(1, fpsPos, "Avg: " + (benchFrames / benchTime).ToString("F1"), 1, timeLabelStyle, Color.black, Color.white);
-                    DrawOutline(2, fpsPos, "Min: " + minFPS.ToString("F1"), 1, timeLabelStyle, Color.black, Color.white);
-                }
+                if (curFPS > 60)
+                    DrawOutline(0, fpsPos, Math.Round(curFPS).ToString("F0") + " fps", 1, timeLabelStyle, Color.black, Color.white);
+                else
+                    DrawOutline(0, fpsPos, Math.Round(curFPS, 2).ToString("F2") + " fps", 1, timeLabelStyle, Color.black, Color.white);
             }
 
         }
@@ -222,20 +205,18 @@ namespace ShowFPS
                 int lastFrameCount = Time.frameCount;
                 float lastTime = Time.realtimeSinceStartup;
                 yield return new WaitForSeconds(frequency);
+
                 float timeSpan = Time.realtimeSinceStartup - lastTime;
                 int frameCount = Time.frameCount - lastFrameCount;
 
                 // Display it
                 curFPS = frameCount / timeSpan;
-                if (benchmark)
-                {
-                    benchTime = Time.realtimeSinceStartup - benchStartTime;
-                    benchFrames = Time.frameCount - benchStartFrames;
-                    if (curFPS < minFPS)
-                    {
-                        minFPS = curFPS;
-                    }
-                }
+                var symRate = Math.Min(Time.maximumDeltaTime / Time.deltaTime, 1f);
+
+                //var symRate = frameCount / (timeSpan / Planetarium.fetch.fixedDeltaTime) ;
+                //Debug.Log("curFPS: " + curFPS.ToString("F2") + ", frameCount: " + frameCount + ",  timeSpan: " + timeSpan +
+                //    ", deltaTime: " + Time.deltaTime + ", maximumDeltaTime: " + Time.maximumDeltaTime + ", symRate: " + symRate + ", 1/symrate: " + (1 / symRate).ToString());
+                Graph.instance.AddFPSValue(curFPS, (float)symRate);
             }
         }
     }

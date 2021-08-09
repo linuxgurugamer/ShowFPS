@@ -1,5 +1,10 @@
 Changelog
 
+0.3.0
+	Added FPS graph
+	New dependencies
+		ClickThroughBlocker
+		ToolbarController
 0.2.4
 	Fixed display of benchmarks
 	Cleaned up unnecessary code

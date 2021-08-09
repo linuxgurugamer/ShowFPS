@@ -11,10 +11,28 @@ namespace ShowFPS
         static string configAbsolutePath;
         static ConfigNode settings;
 
-        public static float position_x;
-        public static float position_y;
+        internal static float position_x;
+        internal static float position_y;
 
-        public static int fontSize = 10;
+        internal static int fontSize = 10;
+
+        internal const int GRAPHWIDTH = 600;
+        internal const int GRAPHHEIGHT = 256;
+
+        internal static int GraphWidth = GRAPHWIDTH;
+        internal static int GraphHeight = GRAPHHEIGHT;
+        internal static float winX = 80;
+        internal static float winY = 80;
+
+        internal static KeyCode keyToggleWindow;
+        internal static KeyCode keyScaleUp;
+        internal static KeyCode keyScaleDown;
+
+        internal static bool showPerfectSym;
+        internal static bool periodicRescale = false;
+        internal static float frequency = 0.5f;
+        internal static float alpha = 1f;
+
         public static void LoadConfig()
         {
             configAbsolutePath = Path.Combine(KSPUtil.ApplicationRootPath, configPath);
@@ -25,7 +43,21 @@ namespace ShowFPS
             position_x = GetValue("position_x", 0.93f);
             position_y = GetValue("position_y", 0.93f);
             fontSize = GetValue("fontSize", 10);
+            keyToggleWindow = GetValue("keyToggleWindow", KeyCode.KeypadMultiply);
+            keyScaleUp = GetValue("keyScaleUp", KeyCode.KeypadPlus);
+            keyScaleDown = GetValue("keyScaleDown", KeyCode.KeypadMinus);
 
+
+            showPerfectSym = GetValue("showPerfectSym", false);
+            periodicRescale = GetValue("periodicRescale", false);
+            frequency = GetValue("frequency", 0.5f);
+            alpha = GetValue("alpha", 1f);
+            winX = GetValue("winX", 80f);
+            winY = GetValue("winY", 80f);
+
+
+
+            Graph.instance.InitGraphWindow();
             PluginKeys.Setup();
         }
 
@@ -35,6 +67,13 @@ namespace ShowFPS
             SetValue("position_y", position_y);
             SetValue("plugin_key", PluginKeys.PLUGIN_TOGGLE.primary.ToString());
             SetValue("fontSize", fontSize);
+
+            SetValue("showPerfectSym", showPerfectSym);
+            SetValue("periodicRescale", periodicRescale);
+            SetValue("frequency", frequency);
+            SetValue("alpha", alpha);
+            SetValue("winX", winX);
+            SetValue("winY", winY);
 
             configAbsolutePath = Path.Combine(KSPUtil.ApplicationRootPath, configPath);
 
@@ -72,6 +111,11 @@ namespace ShowFPS
         {
             string value = settings.GetValue(key);
             return String.IsNullOrEmpty(value) ? defaultValue : value;
+        }
+        public static KeyCode GetValue(string key, KeyCode defaultValue)
+        {
+            string value = settings.GetValue(key);
+            return String.IsNullOrEmpty(value) ? defaultValue : (KeyCode)Enum.Parse(typeof(KeyCode), value, false);
         }
     }
 
