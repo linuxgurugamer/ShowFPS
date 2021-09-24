@@ -151,9 +151,23 @@ namespace ShowFPS
                 redButtonFont.hover.textColor = Color.red;
             greenFont.normal.textColor = Color.green;
 
+            GameEvents.onShowUI.Add(ShowGUI);
+            GameEvents.onHideUI.Add(HideGUI);
         }
 
-        
+        bool isKSPGUIActive = true;
+        void ShowGUI()
+        {
+            isKSPGUIActive = true;
+        }
+
+        void HideGUI()
+        {
+            isKSPGUIActive = false;
+        }
+
+
+
         internal void InitGraphWindow()
         {
             LabelWidth = Settings.GraphWidth;
@@ -384,16 +398,18 @@ namespace ShowFPS
 
         void OnGUI()
         {
-
-            if (showUI)
+            if (isKSPGUIActive)
             {
-                windowPos = ClickThruBlocker. GUILayoutWindow(windowId, windowPos, WindowGUI, windowTitle);
-                // do this here since if it's done within the window you only recieve events that are inside of the window
-                this.resizeHandle.DoResize(ref this.windowPos);
-            }
+                if (showUI)
+                {
+                    windowPos = ClickThruBlocker.GUILayoutWindow(windowId, windowPos, WindowGUI, windowTitle);
+                    // do this here since if it's done within the window you only recieve events that are inside of the window
+                    this.resizeHandle.DoResize(ref this.windowPos);
+                }
 
-            if (showHelp)
-                helpWinPos = ClickThruBlocker.GUILayoutWindow(windowId + 1, helpWinPos, helpWin, "ShowFPS Help");
+                if (showHelp)
+                    helpWinPos = ClickThruBlocker.GUILayoutWindow(windowId + 1, helpWinPos, helpWin, "ShowFPS Help");
+            }
         }
 
         bool showPerfectSym = false;
