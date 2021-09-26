@@ -1,13 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2005
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31129.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowFPS", "ShowFPS\ShowFPS.csproj", "{E91B1460-61E0-4C7E-BE6D-2ABC51D3C14E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3234688C-12C4-419E-B679-77171E971478}"
 	ProjectSection(SolutionItems) = preProject
-		ShowFPS\AssemblyVersion.tt = ShowFPS\AssemblyVersion.tt
 		buildRelease.bat = buildRelease.bat
 		CHANGELOG = CHANGELOG
 		deploy.bat = deploy.bat
