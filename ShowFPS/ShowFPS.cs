@@ -107,18 +107,13 @@ namespace ShowFPS
             }
             if (PluginKeys.PLUGIN_TOGGLE.GetKeyDown())
             {
-#if false
+#if true
                 if (Input.GetKey(KeyCode.LeftControl)
                         || Input.GetKey(KeyCode.RightControl))
                 {
                     if (!enabled)
                     {
                         return;
-                    }
-                    benchmark = !benchmark;
-                    if (benchmark)
-                    {
-                        resetBenchmark();
                     }
                 }
                 else
@@ -127,10 +122,6 @@ namespace ShowFPS
                     guiText.enabled = enabled;
 
                     guiText.useGUILayout = false;
-                    if (!enabled)
-                    {
-                        benchmark = false;
-                    }
                 }
 #endif
             }
