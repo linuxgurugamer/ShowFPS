@@ -1,5 +1,8 @@
 Changelog
 
+0.3.1.1
+	Fixed FPS on screen jumping around in the editor when clicking the buttons at the upper-right
+
 0.3.1
 	Restored the F8 functionality to show the FPS on screen 
 

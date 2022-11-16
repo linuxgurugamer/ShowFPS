@@ -76,17 +76,19 @@ namespace ShowFPS
 
         void OnMouseDown()
         {
+            Debug.Log("[ShowFPS: OnMouseDown");
             drag = true;
-            offset_x = guiText.transform.position.x - Input.mousePosition.x / Screen.width;
-            offset_y = guiText.transform.position.y - (Screen.height - Input.mousePosition.y) / Screen.height;
+            offset_x = guiText.transform.position.x - Input.mousePosition.x;
+            offset_y = guiText.transform.position.y - (Screen.height - Input.mousePosition.y);
         }
 
         void OnMouseUp()
         {
+            Debug.Log("[ShowFPS: OnMouseUp");
             drag = false;
 
-            Settings.position_x = Input.mousePosition.x / Screen.width;
-            Settings.position_y = (Screen.height - Input.mousePosition.y) / Screen.height;
+            Settings.position_x = x;
+            Settings.position_y = y;
         }
 
         float x, y;
@@ -95,8 +97,8 @@ namespace ShowFPS
         {
             if (drag)
             {
-                x = Input.mousePosition.x / Screen.width;
-                y = (Screen.height - Input.mousePosition.y) / Screen.height;
+                x = Input.mousePosition.x ;
+                y = (Screen.height - Input.mousePosition.y);
                 //Debug.Log("ShowFPS.update, mouse x, y: " + x + ", " + y);
                 guiText.transform.position = new Vector3(x + offset_x, y + offset_y, 0f);
             }
@@ -173,7 +175,7 @@ namespace ShowFPS
                 }
                 Vector2 size = timeLabelStyle.CalcSize(new GUIContent(curFPS.ToString("F2")));
 
-                fpsPos.Set(x * Screen.width + offset_x, y * Screen.height + offset_y, 200f, size.y);
+                fpsPos.Set(x + offset_x, y + offset_y, 200f, size.y);
 
                 if (curFPS > 60)
                     DrawOutline(0, fpsPos, Math.Round(curFPS).ToString("F0") + " fps", 1, timeLabelStyle, Color.black, Color.white);
