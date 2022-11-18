@@ -62,8 +62,6 @@ namespace ShowFPS
 
 
         bool drag;
-        float offset_x;
-        float offset_y;
 
         Text guiText;
 
@@ -76,31 +74,39 @@ namespace ShowFPS
 
         void OnMouseDown()
         {
-            Debug.Log("[ShowFPS: OnMouseDown");
+            //Debug.Log("[ShowFPS: OnMouseDown");
             drag = true;
-            offset_x = guiText.transform.position.x - Input.mousePosition.x;
-            offset_y = guiText.transform.position.y - (Screen.height - Input.mousePosition.y);
         }
 
         void OnMouseUp()
         {
-            Debug.Log("[ShowFPS: OnMouseUp");
+            //Debug.Log("[ShowFPS: OnMouseUp");
             drag = false;
 
             Settings.position_x = x;
             Settings.position_y = y;
+            Settings.SaveConfig();
         }
 
         float x, y;
-
+#if false
+        int cnt = 0;
+#endif
         void Update()
         {
+#if fasle
+            if (cnt++ == 100)
+            {
+                Debug.Log("[ShowFPS]: x, y: " +  Settings.position_x + ", " + Settings.position_y);
+                cnt = 0;
+            }
+#endif
             if (drag)
             {
                 x = Input.mousePosition.x ;
                 y = (Screen.height - Input.mousePosition.y);
                 //Debug.Log("ShowFPS.update, mouse x, y: " + x + ", " + y);
-                guiText.transform.position = new Vector3(x + offset_x, y + offset_y, 0f);
+                guiText.transform.position = new Vector3(x , 0f);
             }
             else
             {
@@ -143,7 +149,18 @@ namespace ShowFPS
                     drag = b;
 
                 }
-                else drag = false;
+                else
+                {
+                    if (drag)
+                    {
+                        Settings.position_x = x;
+                        Settings.position_y = y;
+
+                        Settings.SaveConfig();
+
+                        drag = false;
+                    }
+                }
             }
         }
         void DrawOutline(int offset, Rect r, string t, int strength, GUIStyle style, Color outColor, Color inColor)
@@ -175,12 +192,13 @@ namespace ShowFPS
                 }
                 Vector2 size = timeLabelStyle.CalcSize(new GUIContent(curFPS.ToString("F2")));
 
-                fpsPos.Set(x + offset_x, y + offset_y, 200f, size.y);
+                //fpsPos.Set(x, y , 200f, size.y);
+                fpsPos.Set(x, y, size.x, size.y);
 
                 if (curFPS > 60)
                     DrawOutline(0, fpsPos, Math.Round(curFPS).ToString("F0") + " fps", 1, timeLabelStyle, Color.black, Color.white);
                 else
-                    DrawOutline(0, fpsPos, Math.Round(curFPS, 2).ToString("F2") + " fps", 1, timeLabelStyle, Color.black, Color.white);
+                    DrawOutline(0, fpsPos, Math.Round(curFPS, 1).ToString("F1") + " fps", 1, timeLabelStyle, Color.black, Color.white);
             }
 
         }

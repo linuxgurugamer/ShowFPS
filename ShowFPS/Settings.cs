@@ -36,12 +36,11 @@ namespace ShowFPS
         public static void LoadConfig()
         {
             configAbsolutePath = Path.Combine(KSPUtil.ApplicationRootPath, configPath);
-            //Debug.Log("ShowFPS, configAbsolutePath: " + configAbsolutePath);
 
             settings = ConfigNode.Load(configAbsolutePath) ?? new ConfigNode();
             // These values are based on screen size
-            position_x = GetValue("position_x", 0.93f);
-            position_y = GetValue("position_y", 0.93f);
+            position_x = GetValue("position_x", 50);
+            position_y = GetValue("position_y", 50);
             fontSize = GetValue("fontSize", 10);
             keyToggleWindow = GetValue("keyToggleWindow", KeyCode.KeypadMultiply);
             keyScaleUp = GetValue("keyScaleUp", KeyCode.KeypadPlus);
