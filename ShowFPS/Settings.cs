@@ -7,8 +7,7 @@ namespace ShowFPS
 {
     public static class Settings
     {
-        const string configPath = "GameData/ShowFPS/PluginData/settings.cfg";
-        static string configAbsolutePath;
+         static string configPath { get { return KSPUtil.ApplicationRootPath + "GameData/ShowFPS/PluginData/settings.cfg"; } }
         static ConfigNode settings;
 
         internal static float position_x;
@@ -35,9 +34,7 @@ namespace ShowFPS
 
         public static void LoadConfig()
         {
-            configAbsolutePath = Path.Combine(KSPUtil.ApplicationRootPath, configPath);
-
-            settings = ConfigNode.Load(configAbsolutePath) ?? new ConfigNode();
+            settings = ConfigNode.Load(configPath) ?? new ConfigNode();
             // These values are based on screen size
             position_x = GetValue("position_x", 50);
             position_y = GetValue("position_y", 50);
@@ -74,9 +71,7 @@ namespace ShowFPS
             SetValue("winX", winX);
             SetValue("winY", winY);
 
-            configAbsolutePath = Path.Combine(KSPUtil.ApplicationRootPath, configPath);
-
-            settings.Save(configAbsolutePath);
+            settings.Save(configPath);
         }
 
         public static void SetValue(string key, object value)

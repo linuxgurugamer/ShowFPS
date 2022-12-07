@@ -1,5 +1,8 @@
 Changelog
 
+0.3.1.3
+	Some minor code cleanup
+
 0.3.1.2 
 	Changed default position to 50, 50 (upper left corner)
 	Added code to save config when leaving drag mode
