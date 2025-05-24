@@ -18,8 +18,7 @@ Just copy into your KSP's GameData directory.
 Features
 --------
 
-Simple movable framerate counter on your screen. For those that 
-don't have access to the usual Windows utilities for display it, like Linux users.
+Simple movable framerate counter on your screen. For those that don't have access to the usual Windows utilities for display it, like Linux users.
 
 Graph window to show FPS over time. Graph shows current FPS, a moving average of the FPS, and the Simulation rate (ie: how much is it lagging, related to yellow/red clocking). It can also show a line of a normal symrate (no lagging).
 Along the left of the graph will be a scale for the FPS. Along the right will be a scale for the symrate.
