@@ -57,12 +57,10 @@ namespace ShowFPS
     {
         new bool enabled = false;
         internal static float frequency = 0.5f;
+        private bool isKSPGUIActive = true;
 
         float curFPS;
-
-
         bool drag;
-
         Text guiText;
 
         void Awake()
@@ -70,8 +68,20 @@ namespace ShowFPS
             StartCoroutine(FPS());
             guiText = gameObject.GetComponent<Text>();
             guiText.enabled = false;
+
+            GameEvents.onShowUI.Add(ShowGUI);
+            GameEvents.onHideUI.Add(HideGUI);
         }
 
+        void ShowGUI()
+        {
+            isKSPGUIActive = true;
+        }
+
+        void HideGUI()
+        {
+            isKSPGUIActive = false;
+        }
         void OnMouseDown()
         {
             //Debug.Log("[ShowFPS: OnMouseDown");
@@ -94,7 +104,7 @@ namespace ShowFPS
 #endif
         void Update()
         {
-#if fasle
+#if false
             if (cnt++ == 100)
             {
                 Debug.Log("[ShowFPS]: x, y: " +  Settings.position_x + ", " + Settings.position_y);
@@ -184,23 +194,22 @@ namespace ShowFPS
         GUIStyle timeLabelStyle = null;
         public void OnGUI()
         {
-            if (enabled)
+            if (!isKSPGUIActive || !enabled)
+                return;
+
+            if (timeLabelStyle == null)
             {
-                if (timeLabelStyle == null)
-                {
-                    timeLabelStyle = new GUIStyle(GUI.skin.label);
-                }
-                Vector2 size = timeLabelStyle.CalcSize(new GUIContent(curFPS.ToString("F2")));
-
-                //fpsPos.Set(x, y , 200f, size.y);
-                fpsPos.Set(x, y, size.x, size.y);
-
-                if (curFPS > 60)
-                    DrawOutline(0, fpsPos, Math.Round(curFPS).ToString("F0") + " fps", 1, timeLabelStyle, Color.black, Color.white);
-                else
-                    DrawOutline(0, fpsPos, Math.Round(curFPS, 1).ToString("F1") + " fps", 1, timeLabelStyle, Color.black, Color.white);
+                timeLabelStyle = new GUIStyle(GUI.skin.label);
             }
+            Vector2 size = timeLabelStyle.CalcSize(new GUIContent(curFPS.ToString("F2")));
 
+            //fpsPos.Set(x, y , 200f, size.y);
+            fpsPos.Set(x, y, size.x, size.y);
+
+            if (curFPS > 60)
+                DrawOutline(0, fpsPos, Math.Round(curFPS).ToString("F0") + " fps", 1, timeLabelStyle, Color.black, Color.white);
+            else
+                DrawOutline(0, fpsPos, Math.Round(curFPS, 1).ToString("F1") + " fps", 1, timeLabelStyle, Color.black, Color.white);
         }
 
         IEnumerator FPS()
