@@ -82,6 +82,7 @@ namespace ShowFPS
         {
             isKSPGUIActive = false;
         }
+
         void OnMouseDown()
         {
             //Debug.Log("[ShowFPS: OnMouseDown");
