@@ -73,14 +73,14 @@ namespace ShowFPS
             GameEvents.onHideUI.Add(HideGUI);
         }
 
-        void ShowGUI()
-        {
-            isKSPGUIActive = true;
-        }
+        void ShowGUI() => isKSPGUIActive = true;
 
-        void HideGUI()
+        void HideGUI() => isKSPGUIActive = false;
+
+        void OnDestroy()
         {
-            isKSPGUIActive = false;
+            GameEvents.onShowUI.Remove(ShowGUI);
+            GameEvents.onHideUI.Remove(HideGUI);
         }
 
         void OnMouseDown()
