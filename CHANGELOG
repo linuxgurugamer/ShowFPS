@@ -1,5 +1,12 @@
 Changelog
 
+0.3.2
+	Thanks to github user @Clayell for these:
+		Hide FPS counter on F2 press
+		Raise max FPS limit for graph to 600
+	Updated version file to use github for new version info
+	Localized all strings in the mod
+
 0.3.1.3
 	Some minor code cleanup
 

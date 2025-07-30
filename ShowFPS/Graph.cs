@@ -1,4 +1,4 @@
-﻿/*
+/*
  Copyright (c) 2016 Gerry Iles (Padishar)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,6 +20,7 @@
  THE SOFTWARE.
 */
 
+using KSP.Localization;
 using System;
 using System.Text;
 using UnityEngine;
@@ -111,6 +112,7 @@ namespace ShowFPS
 
         ToolbarControl toolbarControl = null;
 
+        #region NO_LOCALIZATION
         internal const string MODID = "ShowFPS_NS";
         internal const string MODNAME = "ShowFPS";
         internal void InitToolbar()
@@ -132,6 +134,7 @@ namespace ShowFPS
                     MODNAME
                 );
             }
+            #endregion
 
             labelStyle = new GUIStyle(GUI.skin.label);
 
@@ -235,7 +238,7 @@ namespace ShowFPS
 
             instance = this;
             windowId = Guid.NewGuid().GetHashCode();
-            windowTitle = "Show FPS";
+            windowTitle = Localizer.Format("#LOC_ShowFPS_Show_FPS");
 
             valCycle = new float[] { 5, 10, 15, 30, 40, 50, 60, 70, 80, 90, 100, 120, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600 };
             numScales = valCycle.Length;
@@ -280,8 +283,11 @@ namespace ShowFPS
 
         void UpdateGuiStr()
         {
-            guiStr = "Scale: " + valCycle[scaleIndex].ToString("F0") + "fps" + "        Current FPS: " + curFPS.ToString("F1") +
-                "        Moving Average FPS: " + ((float)movingAvg).ToString("F1");
+            guiStr = Localizer.Format("#LOC_ShowFPS_Scale") + valCycle[scaleIndex].ToString("F0") + Localizer.Format("#LOC_ShowFPS_fps") + 
+                "        " +  // NO_LOCALIZATION
+                Localizer.Format("#LOC_ShowFPS_Current_FPS") + curFPS.ToString("F1") +
+                "        " + // NO_LOCALIZATION
+                Localizer.Format("#LOC_ShowFPS_Moving_Average_FPS") + ((float)movingAvg).ToString("F1");
         }
 
         void Update()
@@ -408,7 +414,7 @@ namespace ShowFPS
                 }
 
                 if (showHelp)
-                    helpWinPos = ClickThruBlocker.GUILayoutWindow(windowId + 1, helpWinPos, helpWin, "ShowFPS Help");
+                    helpWinPos = ClickThruBlocker.GUILayoutWindow(windowId + 1, helpWinPos, helpWin, Localizer.Format("#LOC_ShowFPS_ShowFPS_Help"));
             }
         }
 
@@ -427,17 +433,17 @@ namespace ShowFPS
             GUILayout.BeginHorizontal();
             GUILayout.Label(guiStr); //, labelStyle);
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Refresh"))
+            if (GUILayout.Button(Localizer.Format("#LOC_ShowFPS_Refresh")))
                 instance.InitGraphWindow();
             GUILayout.Space(10);
-            if (GUILayout.Button("Clear"))
+            if (GUILayout.Button(Localizer.Format("#LOC_ShowFPS_Clear")))
             {
                 Array.Clear(fpsValues, 0, Settings.GraphWidth * 3);
                 valIndex = lastRendered = 0;
                 instance.InitGraphWindow();
             }
             GUILayout.Space(10);
-            if (GUILayout.Button("Rescale", GUILayout.Width(70)) || (periodicRescale && Planetarium.fetch.time - lastRescaleTime >= 60f))
+            if (GUILayout.Button(Localizer.Format("#LOC_ShowFPS_Rescale"), GUILayout.Width(70)) || (periodicRescale && Planetarium.fetch.time - lastRescaleTime >= 60f))
             {
                 float maxHeight = 5;
                 int oldScaleIndex = scaleIndex;
@@ -458,9 +464,9 @@ namespace ShowFPS
             var oShowPerfectSym = showPerfectSym;
             var oPeriodicRescale = periodicRescale;
 
-            showPerfectSym = GUILayout.Toggle(showPerfectSym, "Show Max Symrate");
+            showPerfectSym = GUILayout.Toggle(showPerfectSym, Localizer.Format("#LOC_ShowFPS_Show_Max_Symrate"));
             GUILayout.FlexibleSpace();
-            periodicRescale = GUILayout.Toggle(periodicRescale, "Periodic auto-rescale");
+            periodicRescale = GUILayout.Toggle(periodicRescale, Localizer.Format("#LOC_ShowFPS_Periodic_auto_rescale"));
             GUILayout.EndHorizontal();
             if (!resizeHandle.resizing)
             {
@@ -475,7 +481,7 @@ namespace ShowFPS
                 GUILayout.FlexibleSpace();
                 GUILayout.Label((valCycle[scaleIndex] * .25).ToString("F0"), greenFont);
                 GUILayout.FlexibleSpace();
-                GUILayout.Label(" 0", greenFont);
+                GUILayout.Label(" " + Localizer.Format("#LOC_ShowFPS_0"), greenFont);
                 GUILayout.EndVertical();
 
                 GUILayout.BeginVertical();
@@ -487,9 +493,9 @@ namespace ShowFPS
                 GUILayout.FlexibleSpace();
                 GUILayout.Label(" ");
                 GUILayout.FlexibleSpace();
-                GUILayout.Label("1", redFont);
+                GUILayout.Label(Localizer.Format("#LOC_ShowFPS_1"), redFont);
                 GUILayout.FlexibleSpace();
-                GUILayout.Label("0.5",redFont );
+                GUILayout.Label(Localizer.Format("#LOC_ShowFPS_0_5"),redFont );
                 GUILayout.FlexibleSpace();
                 GUILayout.Label("0", redFont);
                 GUILayout.EndVertical();
@@ -497,7 +503,7 @@ namespace ShowFPS
                 GUILayout.EndHorizontal();
             }
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Transparency:", GUILayout.Width(130));
+            GUILayout.Label(Localizer.Format("#LOC_ShowFPS_Transparency"), GUILayout.Width(130));
             var oAlpha = Alpha;
             Alpha = GUILayout.HorizontalSlider(Alpha, 0.1f, 1f, GUILayout.Width(130));
             if (oAlpha != Alpha)
@@ -508,7 +514,7 @@ namespace ShowFPS
             }
 
             GUILayout.FlexibleSpace();
-            GUILayout.Label("Frequency (" + FPSCounter.frequency.ToString("F2") + "s):", GUILayout.Width(130));
+            GUILayout.Label(Localizer.Format("#LOC_ShowFPS_Frequency") + FPSCounter.frequency.ToString("F2") + Localizer.Format("#LOC_ShowFPS_s"), GUILayout.Width(130));
             var oFreq = FPSCounter.frequency;
             FPSCounter.frequency = GUILayout.HorizontalSlider(FPSCounter.frequency, 0.25f, 1f, GUILayout.Width(130));
 
@@ -540,17 +546,36 @@ namespace ShowFPS
         float Alpha = 1;
         static GUIStyle areaStyle;
 
-        const string helpText1 =
-            "<B><color=yellow>General Controls</color></B>\n\n" +
-            "<B>Mod-KeypadMultiply</B> toggles the display of the window.\n" +
-            "<B>Mod-KeypadPlus</B> increases the vertical scale of the graph.\n" +
-            "<B>Mod-KeypadMinus</B> decreases the vertical scale of the graph.\n\n" +
+        internal static string helpText1 = "";
+#if false
+        Localizer.Format("#LOC_ShowFPS_B") + "" +"<color=yellow>" + Localizer.Format("#LOC_ShowFPS_General_Controls") + "</color>" + Localizer.Format("#LOC_ShowFPS_B_DUP1") +
+            Localizer.Format("#LOC_ShowFPS_B_Mod_KeypadMultiply_B_to") +
+            Localizer.Format("#LOC_ShowFPS_B_Mod_KeypadPlus_B_increa") +
+            Localizer.Format("#LOC_ShowFPS_B_Mod_KeypadMinus_B_decre") +
 
-            "<B><color=yellow>Legend</color>\n\n</B>\b" +
-            "<color=green>Green</color>      FPS﻿\n" +
-            "<color=yellow>Yellow</color>     FPS Average﻿\n" +
-            "<color=red>Red</color>        Simulation Rate\n" +
-            "<color=grey>Grey</color>      Max Sim Rate";
+            "<B><color=yellow>" + // NO_LOCALIZATION
+                Localizer.Format("#LOC_ShowFPS_Legend") +
+                "</color>\n\n</B>\b" +  // NO_LOCALIZATION
+            "<color=green>" + // NO_LOCALIZATION
+                Localizer.Format("#LOC_ShowFPS_Green") +
+                "</color>      " + // NO_LOCALIZATION
+                Localizer.Format("#LOC_ShowFPS_FPS") +
+                "﻿\n" + // NO_LOCALIZATION
+            "<color=yellow>" + // NO_LOCALIZATION
+                Localizer.Format("#LOC_ShowFPS_Yellow") +
+                "</color>     " + // NO_LOCALIZATION
+                Localizer.Format("#LOC_ShowFPS_FPS_Average") +
+                "﻿\n" + // NO_LOCALIZATION
+            "<color=red>" + // NO_LOCALIZATION
+                Localizer.Format("#LOC_ShowFPS_Red") +
+                "</color>        " + // NO_LOCALIZATION
+                Localizer.Format("#LOC_ShowFPS_Simulation_Rate") +
+                "\n" + // NO_LOCALIZATION
+            "<color=grey>" + // NO_LOCALIZATION
+                Localizer.Format("#LOC_ShowFPS_Grey") +
+                "</color>      " + // NO_LOCALIZATION
+                Localizer.Format("#LOC_ShowFPS_Max_Sim_Rate");
+#endif
 
         void helpWin(int windowID)
         {
@@ -559,7 +584,7 @@ namespace ShowFPS
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Close"))
+            if (GUILayout.Button(Localizer.Format("#LOC_ShowFPS_Close")))
                 showHelp = false;
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();

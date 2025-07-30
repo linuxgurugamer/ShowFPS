@@ -18,8 +18,8 @@
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using KSP.Localization;
 using System;
-using System.IO;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -114,10 +114,10 @@ namespace ShowFPS
 #endif
             if (drag)
             {
-                x = Input.mousePosition.x ;
+                x = Input.mousePosition.x;
                 y = (Screen.height - Input.mousePosition.y);
                 //Debug.Log("ShowFPS.update, mouse x, y: " + x + ", " + y);
-                guiText.transform.position = new Vector3(x , 0f);
+                guiText.transform.position = new Vector3(x, 0f);
             }
             else
             {
@@ -208,9 +208,9 @@ namespace ShowFPS
             fpsPos.Set(x, y, size.x, size.y);
 
             if (curFPS > 60)
-                DrawOutline(0, fpsPos, Math.Round(curFPS).ToString("F0") + " fps", 1, timeLabelStyle, Color.black, Color.white);
+                DrawOutline(0, fpsPos, Math.Round(curFPS).ToString("F0") + " " + Localizer.Format("#LOC_ShowFPS_fps_DUP1"), 1, timeLabelStyle, Color.black, Color.white);
             else
-                DrawOutline(0, fpsPos, Math.Round(curFPS, 1).ToString("F1") + " fps", 1, timeLabelStyle, Color.black, Color.white);
+                DrawOutline(0, fpsPos, Math.Round(curFPS, 1).ToString("F1") + " " + Localizer.Format("#LOC_ShowFPS_fps_DUP1"), 1, timeLabelStyle, Color.black, Color.white);
         }
 
         IEnumerator FPS()

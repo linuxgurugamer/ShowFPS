@@ -1,6 +1,6 @@
 {
   "NAME": "ShowFPS",
-  "URL": "http://ksp.spacetux.net/avc/ShowFPS",
+  "URL": "https://raw.githubusercontent.com/linuxgurugamer/ShowFPS/refs/heads/master/ShowFPS.version",
   "DOWNLOAD": "https://github.com/LinuxGuruGamer/ShowFPS/releases",
   "GITHUB": {
     "USERNAME": "linuxgurugamer",
@@ -9,8 +9,8 @@
   "VERSION": {
     "MAJOR": 0,
     "MINOR": 3,
-    "PATCH": 1,
-    "BUILD": 3
+    "PATCH": 2,
+    "BUILD": 0
   },
   "KSP_VERSION": {
     "MAJOR": 1,
@@ -19,7 +19,12 @@
   },
   "KSP_VERSION_MIN": {
     "MAJOR": 1,
-    "MINOR": 12,
+    "MINOR": 9,
     "PATCH": 0
+  },
+  "KSP_VERSION_MAX": {
+    "MAJOR": 1,
+    "MINOR": 12,
+    "PATCH": 99
   }
 }
