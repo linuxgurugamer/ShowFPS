@@ -41,13 +41,13 @@ namespace ShowFPS
             }
         }
 
-        void OnDestroy()
-        {
-            if (instance != null)
-            {
-                Settings.SaveConfig();
-            }
-        }
+        //void OnDestroy()
+        //{
+        //    if (instance != null)
+        //    {
+        //        Settings.SaveConfig();
+        //    }
+        //}
     }
 
     /* Code adapted from the example in http://wiki.unity3d.com/index.php?title=FramesPerSecond 
@@ -67,7 +67,8 @@ namespace ShowFPS
         {
             StartCoroutine(FPS());
             guiText = gameObject.GetComponent<Text>();
-            guiText.enabled = false;
+            enabled = Settings.counterEnabled; // this will always be called after LoadConfig, we're good
+            guiText.enabled = enabled;
 
             GameEvents.onShowUI.Add(ShowGUI);
             GameEvents.onHideUI.Add(HideGUI);
@@ -81,6 +82,9 @@ namespace ShowFPS
         {
             GameEvents.onShowUI.Remove(ShowGUI);
             GameEvents.onHideUI.Remove(HideGUI);
+
+            Settings.counterEnabled = enabled;
+            Settings.SaveConfig(); // need to make sure this is called after the previous line
         }
 
         void OnMouseDown()

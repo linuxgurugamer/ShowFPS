@@ -7,11 +7,12 @@ namespace ShowFPS
 {
     public static class Settings
     {
-         static string configPath { get { return KSPUtil.ApplicationRootPath + "GameData/ShowFPS/PluginData/settings.cfg"; } }
+        static string configPath { get { return KSPUtil.ApplicationRootPath + "GameData/ShowFPS/PluginData/settings.cfg"; } }
         static ConfigNode settings;
 
         internal static float position_x;
         internal static float position_y;
+        internal static bool counterEnabled;
 
         internal static int fontSize = 10;
 
@@ -38,6 +39,7 @@ namespace ShowFPS
             // These values are based on screen size
             position_x = GetValue("position_x", 50);
             position_y = GetValue("position_y", 50);
+            counterEnabled = GetValue("counterEnabled", false);
             fontSize = GetValue("fontSize", 10);
             keyToggleWindow = GetValue("keyToggleWindow", KeyCode.KeypadMultiply);
             keyScaleUp = GetValue("keyScaleUp", KeyCode.KeypadPlus);
@@ -61,6 +63,7 @@ namespace ShowFPS
         {
             SetValue("position_x", position_x);
             SetValue("position_y", position_y);
+            SetValue("counterEnabled", counterEnabled);
             SetValue("plugin_key", PluginKeys.PLUGIN_TOGGLE.primary.ToString());
             SetValue("fontSize", fontSize);
 
