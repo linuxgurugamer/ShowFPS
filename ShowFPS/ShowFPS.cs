@@ -40,6 +40,14 @@ namespace ShowFPS
                 DontDestroyOnLoad(gameObject);
             }
         }
+
+        void OnDestroy()
+        {
+            if (instance != null)
+            {
+                Settings.SaveConfig();
+            }
+        }
     }
 
     /* Code adapted from the example in http://wiki.unity3d.com/index.php?title=FramesPerSecond 
