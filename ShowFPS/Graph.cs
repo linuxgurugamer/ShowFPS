@@ -240,7 +240,7 @@ namespace ShowFPS
             windowId = Guid.NewGuid().GetHashCode();
             windowTitle = Localizer.Format("#LOC_ShowFPS_Show_FPS");
 
-            valCycle = new float[] { 5, 10, 15, 30, 40, 50, 60, 70, 80, 90, 100, 120, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600 };
+            valCycle = new float[] { 5, 10, 15, 30, 40, 50, 60, 70, 80, 90, 100, 120, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000 };
             numScales = valCycle.Length;
 
             helpWinPos.Set(40, 40, 500, 100);
