@@ -8,6 +8,7 @@
 "LOC_ShowFPS_Refresh","Refresh"
 "LOC_ShowFPS_Clear","Clear"
 "LOC_ShowFPS_Rescale","Rescale"
+"LOC_ShowFPS_Lock_FPS_Counter","Lock Movable FPS Counter"
 "LOC_ShowFPS_Show_Max_Symrate","Show Max Symrate"
 "LOC_ShowFPS_Periodic_auto_rescale","Periodic auto-rescale"
 "LOC_ShowFPS_0"," 0"
