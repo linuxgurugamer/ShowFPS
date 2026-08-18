@@ -224,6 +224,7 @@ namespace ShowFPS
             }
             else
             {
+                lockFPScounter = Settings.lockFPScounter;
                 showPerfectSym = Settings.showPerfectSym;
                 periodicRescale = Settings.periodicRescale;
                 Alpha = Settings.alpha;
@@ -418,6 +419,7 @@ namespace ShowFPS
             }
         }
 
+        bool lockFPScounter = false;
         bool showPerfectSym = false;
         bool periodicRescale = false;
         double lastRescaleTime = 0;
@@ -461,9 +463,12 @@ namespace ShowFPS
             }
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
-            var oShowPerfectSym = showPerfectSym;
-            var oPeriodicRescale = periodicRescale;
+            bool oLockFPScounter = lockFPScounter;
+            bool oShowPerfectSym = showPerfectSym;
+            bool oPeriodicRescale = periodicRescale;
 
+            lockFPScounter = GUILayout.Toggle(lockFPScounter, Localizer.Format("#LOC_ShowFPS_Lock_FPS_Counter"));
+            GUILayout.FlexibleSpace();
             showPerfectSym = GUILayout.Toggle(showPerfectSym, Localizer.Format("#LOC_ShowFPS_Show_Max_Symrate"));
             GUILayout.FlexibleSpace();
             periodicRescale = GUILayout.Toggle(periodicRescale, Localizer.Format("#LOC_ShowFPS_Periodic_auto_rescale"));
@@ -523,7 +528,8 @@ namespace ShowFPS
             this.resizeHandle.Draw(ref this.windowPos);
 
             GUI.DragWindow(windowDragRect);
-            if (oShowPerfectSym != showPerfectSym ||
+            if (oLockFPScounter != lockFPScounter ||
+                oShowPerfectSym != showPerfectSym ||
                 oPeriodicRescale != periodicRescale ||
                 oAlpha != Alpha ||
                 oFreq != FPSCounter.frequency)
@@ -534,13 +540,14 @@ namespace ShowFPS
 
         void SaveWinSettings()
         {
-                Settings.showPerfectSym = showPerfectSym;
-                Settings.periodicRescale = periodicRescale;
-                Settings.alpha = Alpha;
-                Settings.frequency = FPSCounter.frequency;
-                Settings.winX = windowPos.x;
-                Settings.winY = windowPos.y;
-                Settings.SaveConfig();
+            Settings.lockFPScounter = lockFPScounter;
+            Settings.showPerfectSym = showPerfectSym;
+            Settings.periodicRescale = periodicRescale;
+            Settings.alpha = Alpha;
+            Settings.frequency = FPSCounter.frequency;
+            Settings.winX = windowPos.x;
+            Settings.winY = windowPos.y;
+            Settings.SaveConfig();
         }
 
         float Alpha = 1;

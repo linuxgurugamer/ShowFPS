@@ -116,7 +116,7 @@ namespace ShowFPS
                 cnt = 0;
             }
 #endif
-            if (drag)
+            if (drag && !Settings.lockFPScounter)
             {
                 x = Input.mousePosition.x;
                 y = (Screen.height - Input.mousePosition.y);

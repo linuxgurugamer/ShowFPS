@@ -28,6 +28,7 @@ namespace ShowFPS
         internal static KeyCode keyScaleUp;
         internal static KeyCode keyScaleDown;
 
+        internal static bool lockFPScounter;
         internal static bool showPerfectSym;
         internal static bool periodicRescale = false;
         internal static float frequency = 0.5f;
@@ -45,7 +46,7 @@ namespace ShowFPS
             keyScaleUp = GetValue("keyScaleUp", KeyCode.KeypadPlus);
             keyScaleDown = GetValue("keyScaleDown", KeyCode.KeypadMinus);
 
-
+            lockFPScounter = GetValue("lockFPScounter", false);
             showPerfectSym = GetValue("showPerfectSym", false);
             periodicRescale = GetValue("periodicRescale", false);
             frequency = GetValue("frequency", 0.5f);
@@ -67,6 +68,7 @@ namespace ShowFPS
             SetValue("plugin_key", PluginKeys.PLUGIN_TOGGLE.primary.ToString());
             SetValue("fontSize", fontSize);
 
+            SetValue("lockFPScounter", lockFPScounter);
             SetValue("showPerfectSym", showPerfectSym);
             SetValue("periodicRescale", periodicRescale);
             SetValue("frequency", frequency);
