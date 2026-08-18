@@ -39,6 +39,7 @@ Graph Window Controls
 		Rescale					Rescale the graph to fix all of the data.
 
 	Toggles
+		Lock FPS Counter		Prevent FPS counter from moving
 		Show Max Symrate		Show a grey line of what the normal (no losses) symrate should be
 		Periodic auto-rescale	Will automatically rescale the graph once a minute, if necessary
 
