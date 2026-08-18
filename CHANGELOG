@@ -1,5 +1,10 @@
 Changelog
 
+0.3.3
+	Thanks to github user @Clayell for this:
+		Add a way to prevent the FPS counter from moving
+		Added setting to allow locking of the FPS counter position
+
 0.3.2.1
 	Thanks to github user @Clayell for this:
 		Save the setting that determines if the FPS counter is open
